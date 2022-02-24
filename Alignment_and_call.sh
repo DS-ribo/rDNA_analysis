@@ -20,10 +20,10 @@
 
 ##Create folders to store results
 #make sure folders with these names do not exist prior
-mkdir raw_vcf
-mkdir filtered_vcf_plain
-mkdir filtered_vcf
-mkdir rDNA_coverage
+#mkdir raw_vcf
+#mkdir filtered_vcf_plain
+#mkdir filtered_vcf
+#mkdir rDNA_coverage
 
 ##load modules
 #check for current version and change accordingly
