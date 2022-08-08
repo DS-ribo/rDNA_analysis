@@ -95,7 +95,7 @@ lofreq call --call-indels -f path/to/rDNA_prototype_fasta_file \
 ${sample}\_rDNA.bam
 
 ##process and filter .vcf
-#NOTE: this does not filter from SB. You can do this later in R by taking the top n% of SB values and removing the entries associated with them from the dataset
+#NOTE: this does not filter from: 1) SB and 2) variants embedded in homopolymer regions. You can do this later using R or other language/program
 #create column names for the future processed vcf file (including the 'ERR' column)
 awk 'BEGIN {printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", "ACCESSION","CHROM","POS","ID","REF","ALT","QUAL","FILTER","DP","AF","SB","DP4","INDEL","HRUN")}' > ${sample}\_filtered_vcf.txt
 
@@ -103,8 +103,8 @@ awk 'BEGIN {printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", "
 awk '/^[^#]/ {print $0}' ${sample}\_rDNA.vcf | awk -F ";" '$1=$1' OFS="\t" > ${sample}\_temp1.txt
 awk -F "\t" 'BEGIN {s = 8; e = 13} {for (i=s; i<=e; i++) sub(".*=","",$i) ; print}' OFS="\t" ${sample}\_temp1.txt > ${sample}\_temp2.txt
 
-#subset POS>10 and POS<9100; also for HRUN<4 and AF>0.004
-awk '$2 > 10 && $2 < 9100 && $13 < 4 && $9 > 0.004 {print}' ${sample}\_temp2.txt > ${sample}\_temp3.txt
+#subset POS>10 and POS<9100; also for HRUN<4 and AF>0.005
+awk '$2 > 10 && $2 < 9100 && $13 < 4 && $9 > 0.005 {print}' ${sample}\_temp2.txt > ${sample}\_temp3.txt
 
 #filter out long (>5 nt) REF and ALT for GC content (>0.6)
 awk '{b = length($4); if (b<5) print $0; else if ((gsub(/G/,"H",$4)+gsub(/C/,"D",$4))/b<0.55) print $0; else print("")}' ${sample}\_temp3.txt > ${sample}\_temp4.txt
